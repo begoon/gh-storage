@@ -139,6 +139,18 @@ application.on("HEAD", "/data/:path{.+$}", async (c) => {
     return c.body("exist");
 });
 
+application.options("/data/:path{.+$}", async (c) => {
+    const headers = c.req.header("ME");
+    if (headers !== ME) throw new HTTPException(403, { message: "forbidden" });
+
+    const path = c.req.param("path");
+
+    consola.info("options", path);
+    const data = await gh.get(path);
+    if (!data) return c.notFound();
+    return c.json({ ...data, content: undefined });
+});
+
 const port = Number(env.PORT) || 8000;
 Deno.serve(
     { port, onListen: () => console.log(`listening on ${port}`) },
