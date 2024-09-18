@@ -105,6 +105,8 @@ application.post("/data/:path{.+$}", async (c) => {
 
     const path = c.req.param("path");
     const data = await c.req.text();
+
+    consola.info("create", path);
     const created = await gh.create(path, data);
     if (!created) throw new HTTPException(500, { message: "failed to create" });
 
@@ -117,6 +119,8 @@ application.put("/data/:path{.+$}", async (c) => {
 
     const path = c.req.param("path");
     const data = await c.req.text();
+
+    consola.info("update", path);
     const updated = await gh.commit(path, data);
     if (!updated) throw new HTTPException(500, { message: "failed to update" });
 
