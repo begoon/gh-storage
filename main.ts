@@ -9,6 +9,10 @@ import { GitHubAPI } from "./github.ts";
 const { version } = meta;
 console.log(`version ${version}`);
 
+const ME = env.ME;
+
+if (!ME) throw new Error("ME is not defined");
+
 const gh = new GitHubAPI();
 
 const application = new Hono();
@@ -50,6 +54,9 @@ application.get("/status", async (c) => {
 });
 
 application.get("/data/:path{.+$}", async (c) => {
+    const headers = c.req.header("ME");
+    if (headers !== ME) throw new HTTPException(403, { message: "forbidden" });
+
     const path = c.req.param("path");
     const binary = Boolean(c.req.query("binary"));
 
@@ -64,6 +71,9 @@ application.get("/data/:path{.+$}", async (c) => {
 });
 
 application.get("/raw/:path{.+$}", async (c) => {
+    const headers = c.req.header("ME");
+    if (headers !== ME) throw new HTTPException(403, { message: "forbidden" });
+
     const path = c.req.param("path");
 
     consola.info("raw", path);
@@ -77,6 +87,9 @@ application.get("/raw/:path{.+$}", async (c) => {
 });
 
 application.delete("/data/:path{.+$}", async (c) => {
+    const headers = c.req.header("ME");
+    if (headers !== ME) throw new HTTPException(403, { message: "forbidden" });
+
     const path = c.req.param("path");
 
     consola.info("delete", path);
@@ -87,6 +100,9 @@ application.delete("/data/:path{.+$}", async (c) => {
 });
 
 application.post("/data/:path{.+$}", async (c) => {
+    const headers = c.req.header("ME");
+    if (headers !== ME) throw new HTTPException(403, { message: "forbidden" });
+
     const path = c.req.param("path");
     const data = await c.req.text();
     const created = await gh.create(path, data);
@@ -96,6 +112,9 @@ application.post("/data/:path{.+$}", async (c) => {
 });
 
 application.put("/data/:path{.+$}", async (c) => {
+    const headers = c.req.header("ME");
+    if (headers !== ME) throw new HTTPException(403, { message: "forbidden" });
+
     const path = c.req.param("path");
     const data = await c.req.text();
     const updated = await gh.commit(path, data);
@@ -105,6 +124,9 @@ application.put("/data/:path{.+$}", async (c) => {
 });
 
 application.on("HEAD", "/data/:path{.+$}", async (c) => {
+    const headers = c.req.header("ME");
+    if (headers !== ME) throw new HTTPException(403, { message: "forbidden" });
+
     const path = c.req.param("path");
 
     consola.info("head", path);
