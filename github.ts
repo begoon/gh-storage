@@ -157,7 +157,7 @@ export class GitHubAPI {
 
     async create(path: string, data: string): Promise<boolean> {
         try {
-            const message = `create ${now()}`;
+            const message = `create ${now()}, ${path}`;
             const content = Buffer.from(
                 new TextEncoder().encode(data),
             ).toString("base64");
