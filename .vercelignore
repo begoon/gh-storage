@@ -1,0 +1,7 @@
+.env*
+.vscode
+*.ts
+deno.json
+deno.lock
+exe
+tmp
